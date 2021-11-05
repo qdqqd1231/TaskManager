@@ -9,7 +9,7 @@ namespace TaskManager
     class Employer
     {
         public string name { get; set; }
-        private string surname { get; }
+        public string surname { get; set; }
         private Task currentTask;
         public Employer(string name, string surname)
         {
@@ -20,17 +20,11 @@ namespace TaskManager
         {
             List<Task> tmpTasks = new List<Task>(tasks.Count);
             tmpTasks.AddRange(tasks);
-            int counterTasks = 0;
-            int countTasks = tasks.Count;
             for (int i = 0; i < employers.Count; i++)
             {
-                int retryCounter = 0;
                 for (int j = 0; j < tmpTasks.Count; j++)
-                {
-
-                    Console.WriteLine($"Задач осталось для выбора : {countTasks - counterTasks - retryCounter - 1}");
-                    Console.WriteLine($"Задача {counterTasks + 1}");
-                    tasks[j].PrintInfo();
+                { 
+                    tmpTasks[j].PrintInfo();
                     Console.WriteLine($"Согласен ли сотрудник {employers[i].name} {employers[i].surname} выполнять ее?да/нет");
                     string input = Console.ReadLine().ToLower();
                     if (!input.Equals("нет") || j == tmpTasks.Count - 1)
@@ -40,19 +34,24 @@ namespace TaskManager
                             Console.WriteLine("Задачи закончились придется выдать вам последнюю!");
                         }
                         employers[i].currentTask = tmpTasks[j];
-                        employers[i].currentTask.TaskAdded(deadline);
+                        employers[i].currentTask.TaskDeadlineAndStastusInProcrss(deadline);
                         tmpTasks.Remove(tmpTasks[j]);
                         Console.WriteLine("Задача успешно передана!Нажмите enter для продолжения");
                         Console.ReadKey();
                         Console.Clear();
                         break;
                     }
-                    else
-                    {
-                        retryCounter++;
-                    }
+                   
                 }
-                counterTasks++;
+                
+            }
+        }
+
+        public static void SendTask(Employer employer)
+        {
+            if (employer.currentTask != null && employer.currentTask.status == TaskStatus.InProcess)
+            {
+                Task.GiveOnCheck(employer.currentTask);
             }
         }
     }

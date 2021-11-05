@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace TaskManager
 {
-    public enum StatusOfProject
+    public enum ProjectStatus
     {
         Project,
-        Execution,
+        Perfomance,
         Closed
     }
     class Project
     {
-        public StatusOfProject Status { get; set; }
+        public ProjectStatus Status { get; set; }
         public string description { get;  }
         public string name { get; }
         public Employer employer { get; private set; }
@@ -27,12 +27,45 @@ namespace TaskManager
             employer = teamLeader;
             this.tasks = tasks;
             
-            Status = StatusOfProject.Project;
+            Status = ProjectStatus.Project;
         }
-        public void DeadlineProject(int deadline)
+        public void DeadlineProject(int projectDeadline)
         {
-            this.projectDeadline = DateTime.Now.AddDays(deadline);
-            Status = StatusOfProject.Execution;
+            this.projectDeadline = DateTime.Now.AddDays(projectDeadline);
+            Status = ProjectStatus.Perfomance;
+        }
+
+        public void GiveProgect(List<Employee> employees)
+        {
+            bool projectIsAvaliable = true;
+            for (int i = 0; i < employees.Count; i++)
+            {
+                if (employees[i] == null)
+                {
+                    Console.WriteLine("Проект нельзя сформировать,некоторые работники не получили задачи!");
+                    projectIsAvaliable = false;
+                }
+            }
+            if (projectIsAvaliable)
+            {
+                this.Status = ProjectStatus.Perfomance;
+                Console.WriteLine("Проект принят на исполнение");
+            }
+        }
+        public void CloseProject()
+        {
+            if (Status == ProjectStatus.Perfomance && this != null)
+            {
+                Status = ProjectStatus.Closed;
+            }
+            if (projectDeadline < DateTime.Now)
+            {
+                Console.WriteLine("Проект закрыт не в срок!Все без премии!");
+            }
+            else
+            {
+                Console.WriteLine("Проект успели в дедлайн закрыть!Ура!!!");
+            }
         }
     }
 }

@@ -15,10 +15,10 @@ namespace TaskManager
     }
     class Task
     {
-        public TaskStatus Status { get; private set; }
+        public TaskStatus status { get; private set; }
         private readonly string description;
         private Employer teamLeader;
-        private Report reports = new Report();
+        
         public DateTime deadline = new DateTime();
         
         public Task( string description, Employer teamLeader)
@@ -26,17 +26,24 @@ namespace TaskManager
             
             this.description = description;
             this.teamLeader = teamLeader;
-            Status = TaskStatus.Assigned;
+            status = TaskStatus.Assigned;
 
         }
         public void PrintInfo()
         {
-            Console.WriteLine($"Описание: {description}, Лидер : {teamLeader}, ");
+            Console.WriteLine($"Описание: {description}, Лидер : {teamLeader.name}");
         }
-        public void TaskAdded(int deadline)
+        public void TaskDeadlineAndStastusInProcrss(int deadline)
         {
             this.deadline = DateTime.Now.AddDays(deadline);
-            Status = TaskStatus.InProcess;
+            status = TaskStatus.InProcess;
+        }
+        public static void GiveOnCheck(Task task)
+        {
+            if (task != null && task.status == TaskStatus.InProcess)
+            {
+                task.status = TaskStatus.OnCheck;
+            }
         }
     }
 
